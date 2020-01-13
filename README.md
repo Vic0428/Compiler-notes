@@ -2,7 +2,7 @@
 
 ## Organization
 
-Lecture 1: [Welcome, Ocaml/FP Review](l1.md)
+Lecture 1: [Welcome, Ocaml/FP Review](lecture1/l1.md)
 
 ## Reference
 
