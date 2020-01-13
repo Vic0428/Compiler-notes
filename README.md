@@ -2,7 +2,11 @@
 
 ## Organization
 
+### Lectures
 Lecture 1: [Welcome, Ocaml/FP Review](lecture1/l1.md)
+
+### Programming Assignments
+PA0: [OCaml and Compiler Warmup](PA0/pa0.md)
 
 ## Reference
 
