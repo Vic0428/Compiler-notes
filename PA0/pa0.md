@@ -20,6 +20,12 @@
    opam install extlib ounit ocamlfind
    ```
 
+4. Configure environment
+
+   ```ocaml
+    eval $(opam config env)
+   ```
+
 ## Basic Programming in OCaml
 
 `OCaml` files are written with `.ml` extension. (Similar to `Python`, since it will evaluate the file directly when running)
@@ -87,11 +93,96 @@ The syntax of function call
 =>	5
 ```
 
+### Recursive functions
 
+`Ocaml` distinguishes between functions that can contain `recursive` calls and not. We need to define recursive functions by using `let rec`. 
+
+Calculate the factorial of `n`
+
+```ocaml
+let rec factorial(n : int) : int = 
+  if n <= 1 then 1
+  else n * (factorial (n - 1));;
+```
+
+### Testing with OUnit
+
+We will use a library called [OUnit](http://ounit.forge.ocamlcore.org/api-ounit/index.html) to write tests. 
+
+With `OUnit`, we will write declarations in one file, and test them in another. 
+
+- `functions.ml` the declarations of various functions
+- `test.ml`  which will contain tests
+
+A test in `OUnit` is a name paired with a function of one argument. And the test predicates most commonly used is `assert_equal`. 
+
+The syntax `>::` is used to combine the name and the function together into a test. 
+
+An example of test file
+
+```ocaml
+open OUnit2
+
+let check_fn _ =
+  assert_equal (2 + 2) 4;;
+
+let my_first_test = "my_first_test">::check_fn;;
+
+let suite = "suite">:::[my_first_test];;
+
+run_test_tt_main suite
+```
+
+To build and run the given skeleton, we can use the Makefile to run the test
+
+`Makefile`
+
+```makefile
+test: test.ml
+	ocamlfind ocamlc -o test -package oUnit -linkpkg -g test.ml
+	./test
+```
+
+We need to use `ocamlfind` that knows how to search your system for packages installed with e.g. OPAM. 
+
+Run the test
+
+```shell
+$ make test
+$ ./test
+```
+
+Another example of a failed test
+
+```ocaml
+let check_fn2 _ =
+  assert_equal (2 + 3) 4;;
+
+let my_second_test = "my_second_test">::check_fn2;;
+
+let suite = "suite">:::[my_second_test];;
+```
+
+But however it doesn’t tell us much about the test information, we want more info. Notice that `assert_equal` has an optional argument that specifies how to turn the values under test into a string for printing. 
+
+```ocaml
+let t_int name value expected = name>::
+  (fun _ -> assert_equal expected value ~printer:string_of_int);;
+
+let my_third_test = t_int "my_third_test" (2 + 2) 7;;
+let my_fourth_test = t_int "my_fourth_test" (2 + 2) 4;;
+
+let suite = "suite">:::[
+    my_third_test;
+    my_fourth_test;
+];;
+run_test_tt_main suite
+```
 
 ## Reference
 
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
 
 - [Install Opam](https://opam.ocaml.org/doc/Install.html)
-- 
+
+  
