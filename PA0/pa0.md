@@ -403,6 +403,59 @@ Some `OCaml` helper functions for list: [link](http://caml.inria.fr/pub/docs/man
        | first :: rest -> sum2(first) :: (sum_all rest);;
    ```
 
+## Tuples
+
+Sometime we want to return more than one value and `OCaml` has a built-in way of handling these cases called `tuples` . To create a tuple, we enclose two or more values in parentheses. 
+
+```ocaml
+let tup = (1, "a", []);;
+```
+
+And we can use a special kind of let binding, where we give names to the positions of a tuple value.
+
+```ocaml
+let tup = (1, "a", []);;
+let (one, a, empty_list) = tup;
+(*
+	one is 1
+	a is "a"
+	empty_list is []
+*)
+```
+
+And there are two built-in functions, `fst` and `snd`, that get the first and second component of a two-element tuple, respectively. 
+
+```ocaml
+let increment_snd (t : (string * int)) : (string * int) = 
+  (fst t, 1 + (snd t));;
+```
+
+### Exercise
+
+1. Implement and test a function called `sum_of_squares`, which takes a `(int * int) list` and produces a `int` that is the sum of the squares of the pairs in the list.
+
+   ```ocaml
+   let rec sum_of_squares (t : (int * int) list) : int = 
+     match t with
+       | [] -> 0
+       | first :: rest -> (fst first) * (fst first) + 
+                          (snd first) * (snd first) + 
+                          sum_of_squares(rest);;
+   ```
+
+   
+
+2. Implement and test a function called `remainders`, which takes a `int list` and a `int`, and produces a `(int * int) list`. The resulting list should contain the dividend and the remainder of dividing by the given number. For example, `(remainders [4; 6; 11] 3)` should produce `[(1, 1); (2, 0); (3, 2)]`
+
+   ```c++
+   let rec remainders (l : int list) (n : int) : (int * int) list =
+     match l with
+       | [] -> []
+       | first :: rest -> (first / n, first mod n) :: (remainders rest n);;
+   ```
+
+   
+
 ## Reference
 
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
