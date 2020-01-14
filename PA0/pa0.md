@@ -2,6 +2,8 @@
 
 ## Setup
 
+### Install opam and OCaml
+
 1. Install `opam`  ([OPAM](https://opam.ocaml.org/) is a package manager for OCaml)
 
    ```c++
@@ -25,6 +27,32 @@
    ```ocaml
     eval $(opam config env)
    ```
+
+### Configure reason-ml plugin on vscode
+
+1. On `vscode` plugin market, install `OCaml and Reason IDE`
+
+2. Install merlin 
+
+   ```
+   opam install merlin
+   ```
+
+3. Configure in `settings.json`
+
+   ```
+   "reason.path.ocamlmerlin": "/Users/vic/.opam/default/bin/ocamlmerlin",
+   "reason.path.refmt": "/Users/vic/.opam/default/bin/refmt",
+   "editor.formatOnSave": true,
+   "reason.path.ocpindent": "/Users/vic/.opam/default/bin/ocp-indent",
+   "reason.path.opam": "/usr/local/bin/opam",
+   "reason.path.ocamlfind": "/Users/vic/.opam/default/bin/ocamlfind"
+   ```
+
+4. Add `.merlin` file in current directory ([link](https://github.com/ocaml/merlin/wiki/project-configuration))
+
+5. Cool `OCaml-vscode`
+   ![image-20200114094751307](pa0.assets/image-20200114094751307.png)
 
 ## Basic Programming in OCaml
 
@@ -297,5 +325,7 @@ let rec inorder_str (bt : btnode) : string =
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
 
 - [Install Opam](https://opam.ocaml.org/doc/Install.html)
+
+- [The .merlin file](https://github.com/ocaml/merlin/wiki/project-configuration)
 
   
