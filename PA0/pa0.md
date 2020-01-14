@@ -454,6 +454,57 @@ let increment_snd (t : (string * int)) : (string * int) =
        | first :: rest -> (first / n, first mod n) :: (remainders rest n);;
    ```
 
+## Option
+
+We can raise exceptions with `failwith`. Sometimes, the failure of an operation is a reasonable outcome, and having a way to report a failure, or the absence of an answer, with a normal value rather than an exception is quire useful. 
+
+If wrote the definition ourselves, the `option` would look like
+
+```ocaml
+type 'a option = 
+	| None
+	| Some of 'a
+```
+
+The first version of `find` function
+
+```ocaml
+let rec find (l : 'a list) (pred : 'a -> bool) : 'a = 
+  match l with
+    | [] -> failwith "Not found"
+    | x::xs -> if pred x then x else find xs pred;;
+```
+
+The second version of `find` function
+
+```ocaml
+let rec find_opt (l : 'a list) (pred : 'a -> bool) : 'a option = 
+  match l with
+    | [] -> None
+    | x :: xs -> if pred x then Some(x) else find_opt xs pred;;
+```
+
+### Exercise
+
+1. Write and test a function `mean` which takes an `int list` and produces an `int option`, where it returns `None` if the list is empty, and a `Some` containing the mean of the numbers if it isn’t.
+
+   ```ocaml
+   let rec mean (l : int list) : int option = 
+     match l with 
+       | [] -> None
+       | x :: xs -> Some((sum2 l) / (List.length l))
+   ```
+
+2. Write and test a function `list_max` which takes an `int list` and produces an `int option`, where it returns `None` if the list is empty, and a `Some` containing the largest element in the list if it isn’t empty.
+
+   ```ocaml
+   let rec list_max (l : int list) : int option = 
+     match l with
+       | [] -> None
+       | x :: [] -> Some x
+       | x :: xs -> Some (max x (Option.get (list_max xs)))
+   ```
+
    
 
 ## Reference
@@ -464,4 +515,7 @@ let increment_snd (t : (string * int)) : (string * int) =
 
 - [The .merlin file](https://github.com/ocaml/merlin/wiki/project-configuration)
 
+- [Option](https://caml.inria.fr/pub/docs/manual-ocaml/libref/Option.html)
+
   
+
