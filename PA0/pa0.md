@@ -320,6 +320,89 @@ let rec inorder_str (bt : btnode) : string =
          1 + (max (size left) (size right));;
    ```
 
+## List and Parametric Polymorphism
+
+### Linked Lists, By Hand
+
+A definition for the nodes of a linked list
+
+```ocaml
+type llist = 
+	| Empty
+	| Link of string * llist
+```
+
+That is, a list is either `Empty` , or a `Link` of a string onto another list. 
+The natural solution is to make the datatype `generic` over the kind of data it uses. Type variables are written with a leading `‘` character. 
+
+```
+type 'a llist = 
+	| Empty
+	| Link of 'a * 'a llist
+```
+
+This describes a *homogeneous* list, where all elements will have the same type. 
+
+```ocaml
+let l1 = Link(1, Empty)
+let l2 = Link("a", Empty)
+```
+
+Here, `l1` will have type `int list` and `l2` have type string list. 
+
+### Linked Lists, Built-in
+
+The built-in equivalent `Empty` is written `[]` and `Link(first, rest)` is written `first::rest`. And the syntax     `[a;b;c]` is shorthand for `a::b::c::[]`. The type of built-in list is `’a list` which can be specialized for any list contents. The `sum` function can be written as follows
+
+```ocaml
+let rec sum2 (l : int list) : int = 
+  match l with 
+    | [] -> 0
+    | first :: rest -> first + sum2(rest);;
+```
+
+Some `OCaml` helper functions for list: [link](http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html)
+
+### Exercises
+
+1. Write and test a function `increment_all` that takes an `int list` and produces a new `int list` with all the elements increased by 1.
+
+   ```
+   let rec increment_all (l : int list) : int list = 
+     match l with 
+       | [] -> []
+       | first :: rest -> (first + 1) :: (increment_all rest);;
+   ```
+
+2. Write and test a function `long_strings` that takes a `string list` and an `int` and produces a new `string list` that contains all the strings that had length greater than the given `int`. You can get the length of a string with the function `String.length`. Other string functions are documented [here](http://caml.inria.fr/pub/docs/manual-ocaml/libref/String.html).
+
+   ```ocaml
+   let rec long_strings (l : string list) (n : int) : string list = 
+     match l with 
+       | [] -> []
+       | fisrt :: rest -> if (String.length fisrt) > n then fisrt :: (long_strings rest n)
+                          else (long_strings rest n);;
+   ```
+
+3. Write and test a function `every_other` that takes a `'a list` (a list with elements of any one type), and produces a new list that contains every other element from the given list, starting with the first element.
+
+   ```ocaml
+   let rec every_other (l : 'a list) : 'a list = 
+     match l with
+       | [] -> []
+       | first :: second :: rest -> first :: (every_other rest)
+       | first :: [] -> [first];;
+   ```
+
+4. Write and test a function `sum_all` that takes an `int list list` (that is, a list of lists of integers), and returns an `int list` that contains the sums of the sub-lists.
+
+   ```ocaml
+    let rec sum_all (l : int list list) : int list = 
+     match l with
+       | [] -> []
+       | first :: rest -> sum2(first) :: (sum_all rest);;
+   ```
+
 ## Reference
 
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
