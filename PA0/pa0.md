@@ -505,7 +505,131 @@ let rec find_opt (l : 'a list) (pred : 'a -> bool) : 'a option =
        | x :: xs -> Some (max x (Option.get (list_max xs)))
    ```
 
-   
+## Compiler
+
+Implement a small compiler -> build up from scratch 
+
+- Input: take a user program (a number)
+- Output: create an executable binary that prints the number+
+
+### The big picture
+
+The heart of each compiler we write will be an OCaml program
+
+- Input: program
+- Output: assembly code
+
+But there are few questions
+
+- How will the input program be handed to, and represented in, OCaml?
+- How will the generated assembly code be run?
+
+### The wrapper
+
+Our model for the code we generate is that it will start from a C-style function call
+
+- We use a C program as the wrapper around our code
+- We can defer some details to our C wrapper
+
+```c++
+#include <stdio.h>
+
+extern int our_code_starts_here() asm("our_code_starts_here");
+
+int main(int argc, char **argv) {
+    int result = our_code_starts_here();
+    printf("%d\n", result);
+    return 0;
+}
+```
+
+### Hello, x86
+
+Our next goal is to
+
+- Write an assembly program that defines `our_code_starts_here`
+- Link that program with `main.c` and create an executable
+
+We will generate 64-bit x86 assembly, and use the Intel syntax. 
+
+```assembly
+section .text
+global our_code_starts_here
+our_code_starts_here:
+    mov rax, 37
+    ret
+```
+
+### Hello, nasm
+
+We will use `nasm` as our assembler, and it will take assembly (`.s`) files and turn them into object (`.o`) files that traditional compilers like `clang` or `gcc` can work with. 
+
+```shell
+nasm -f macho64 -o our_code.o our_code.s
+```
+
+This creates a file called `our_code.o` is `Execuutable and Linkable Format`
+
+And finally it will compile it into a binary along with a C source file
+
+```c++
+clang -g -o our_code main.c our_code.o
+```
+
+Now we can run our code
+
+```
+./our_code
+37
+```
+
+### Hello, compiler
+
+Take the name of a file and output the compiled assembly code on standard output.
+Here is a simple `compile.ml` that takes a file as a command line argument
+
+```ocaml
+open Printf
+
+(* A very simple compiler - insert the given integer into 
+the mov instruction at the correct place *)
+let compile (program : int) : string = 
+  sprintf "
+section .text
+global our_code_starts_here
+our_code_starts_here:
+  mov eax, %d
+  ret\n" program;;
+
+(* Some OCaml boilerplate for reading files and command-line arguments*)
+let () = 
+  let input_file = (open_in (Sys.argv.(1))) in
+  let input_program = int_of_string (input_line input_file) in
+  let program = (compile input_program) in
+  printf "%s\n" program;;
+```
+
+And the `Makefile` this set of dependencies
+
+```c++
+%.run: %.o
+	clang -o $@ main.c $<
+
+%.o: %.s
+	nasm -f macho64 -o $@ $<
+
+%.s: %.int
+	ocaml compile.ml $< > $@
+```
+
+And we can run the compiler
+
+```shell
+make 87.run
+./87.run
+```
+
+Then we have a useful pipeline for getting from strings to assembly to a binary. 
 
 ## Reference
 
@@ -517,5 +641,6 @@ let rec find_opt (l : 'a list) (pred : 'a -> bool) : 'a option =
 
 - [Option](https://caml.inria.fr/pub/docs/manual-ocaml/libref/Option.html)
 
-  
+- [Executable and Linkable Format](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format)
 
+  
