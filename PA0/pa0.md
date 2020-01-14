@@ -179,6 +179,119 @@ let suite = "suite">:::[
 run_test_tt_main suite
 ```
 
+### Exercise
+
+`fibonacci()` function and `max` function
+
+```ocaml
+let rec fibonacci n =
+  if n == 0 then 1
+  else if n == 1 then 1
+  else (fibonacci (n - 1)) + (fibonacci (n - 2));;
+
+let max m n =
+  if m > n then m
+  else n;;
+```
+
+`test.ml` for two above functions
+
+```ocaml
+open OUnit2
+open Functions
+
+let t_int name value expected = name>::
+  (fun ctxt -> assert_equal expected value ~printer:string_of_int)
+
+let suite =
+"suite">:::
+ [
+   t_int "(fibonacci 2)" (fibonacci 2) 2;
+   t_int "(fibonacci 3)" (fibonacci 3) 3;
+   t_int "(fibonacci 4)" (fibonacci 4) 5;
+   t_int "(max 2 3)" (max 2 3) 3;
+   t_int "(max 100 98)" (max 100 98) 100;
+ ]
+;;
+
+run_test_tt_main suite
+```
+
+## Datatypes
+
+### Binary Tress with `type`
+
+How to create new **datatypes** in `OCaml` and program with them.
+
+Define binary tree nodes using keyword `type`
+
+```ocaml
+type btnode = 
+	| Leaf
+	| Node of string * btnode * btnode
+```
+
+An example of `btnode`
+
+```ocaml
+    "a"       Node("a",
+   /   \        Node("b", Leaf, Leaf), Node("c", Leaf, Leaf))
+"b"     "c"
+```
+
+Each position with no child corresponds to a `Leaf` and others correspond to uses of `Node`. We call `Leaf` and `Node` variants of the `btnode` *type*. (A `Leaf` is used here where you may have seen `NULL` in C++ implementation of a binary tree)
+
+### Manipulating Data with `match`
+
+An example of match
+
+```ocaml
+let m1 = match Node("a", Leaf, Leaf) with
+	| Leaf -> "z"
+	| Node(s, left, right) -> s;;
+```
+
+Substitution rules also work for understanding the `match`. 
+
+If we want to write and `inorder_str` for the `btnode` 
+
+```ocaml
+let rec inorder_str (bt : btnode) : string =
+  match bt with
+    | Leaf -> ""
+    | Node(s, left, right) ->
+      (inorder_str left) ^ s ^ (inorder_str right)
+```
+
+###  Exercise
+
+1. Write a test function `t_string` tests for equality of strings. 
+
+   ```ocaml
+   let t_str name value expected = name>::
+       (fun ctxt -> assert_equal expected value ~printer: (fun x -> x));;
+   ```
+
+2. Write a function `size` that takes a `btnode` and produces an integer that is the number of `Node`s in the tree.
+
+   ```ocaml
+   let rec size (bt : btnode) : int =
+     match bt with
+       | Leaf -> 0
+       | Node(_, left, right) ->
+         (size left) + 1 + (size right);;
+   ```
+
+3. Write a function `height` that takes a `btnode` and produces an integer that is the height of the tree.
+
+   ```ocaml
+   let rec height (bt : btnode) : int =
+     match bt with
+       | Leaf -> 0
+       | Node(_, left, right) ->
+         1 + (max (size left) (size right));;
+   ```
+
 ## Reference
 
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
