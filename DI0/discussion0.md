@@ -48,3 +48,7 @@ let rec eval (e : expr) : int =
 `=` is *structural equality*, which is more like `.equals()` in `Java`
 
 `==` is *pointer* or *reference equality*, when `match` matches on a particular value, it uses `=`.  
+
+## Reference
+
+- [UCSD CSE131](https://ucsd-cse131-f19.github.io/lectures/09-27-discussion/)
