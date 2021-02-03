@@ -635,6 +635,8 @@ Then we have a useful pipeline for getting from strings to assembly to a binary.
 
 - [UCSD CSE131](https://ucsd-cse131-f19.github.io/pa0/#neonate)
 
+- [NEU CS4410](https://course.ccs.neu.edu/cs4410/lec_neonate_notes.html)
+
 - [Install Opam](https://opam.ocaml.org/doc/Install.html)
 
 - [The .merlin file](https://github.com/ocaml/merlin/wiki/project-configuration)
